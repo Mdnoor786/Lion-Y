@@ -1,1 +1,2 @@
-# Lion-Y
+# Lion-X
+> Telethon based userbot (•~•)
