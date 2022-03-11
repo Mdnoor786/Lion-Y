@@ -71,9 +71,7 @@ async def ban(event):
         return
 
     user, reason = await get_user_from_event(event)
-    if user:
-        pass
-    else:
+    if not user:
         return
     try:
         await event.client(EditBannedRequest(event.chat_id, user.id, BANNED_RIGHTS))
@@ -83,8 +81,6 @@ async def ban(event):
     # Helps ban group join spammers more easily
     try:
         reply = await event.get_reply_message()
-        if reply:
-            pass
     except BadRequestError:
         await event.reply(
             "`I dont have message nuking rights! But still he was banned!`"
@@ -115,9 +111,7 @@ async def nothanos(event):
         return
     user = await get_user_from_event(event)
     user = user[0]
-    if user:
-        pass
-    else:
+    if not user:
         return
     try:
         await event.client(EditBannedRequest(event.chat_id, user.id, UNBAN_RIGHTS))
@@ -160,9 +154,7 @@ async def promote(event):
     user, rank = await get_user_from_event(event)
     if not rank:
         rank = "mememaster"  # Just in case.
-    if user:
-        pass
-    else:
+    if not user:
         return
     # Try to promote if current user is admin or creator
     try:
@@ -200,9 +192,7 @@ async def demote(event):
     rank = "mememaster"  # dummy rank, lol.
     user = await get_user_from_event(event)
     user = user[0]
-    if user:
-        pass
-    else:
+    if not user:
         return
 
     newrights = ChatAdminRights(
@@ -254,9 +244,7 @@ async def pin(event):
         return
 
     options = event.pattern_match.group(1)
-    is_silent = True
-    if options.lower() == "loud":
-        is_silent = False
+    is_silent = options.lower() != "loud"
     try:
         await event.client(UpdatePinnedMessageRequest(event.to_id, to_pin, is_silent))
     except BadRequestError:

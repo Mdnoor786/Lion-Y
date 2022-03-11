@@ -38,7 +38,7 @@ async def spammer(e):
         message = e.text
         counter = int(message[6:8])
         spam_message = str(e.text[8:])
-        await asyncio.wait([e.respond(spam_message) for i in range(counter)])
+        await asyncio.wait([e.respond(spam_message) for _ in range(counter)])
         await e.delete()
         if LOGGER:
             await e.client.send_message(
@@ -53,7 +53,7 @@ async def bigspam(e):
         message = e.text
         counter = int(message[9:13])
         spam_message = str(e.text[13:])
-        for i in range(1, counter):
+        for _ in range(1, counter):
             await e.respond(spam_message)
         await e.delete()
         if LOGGER:
@@ -65,32 +65,33 @@ async def bigspam(e):
 @Lion.on(admin_cmd(pattern="picspam"))
 @Lion.on(sudo_cmd(pattern="picspam", allow_sudo=True))
 async def tiny_pic_spam(e):
-    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        message = e.text
-        text = message.split()
-        counter = int(text[1])
-        r_message = await e.get_reply_message()
-        downloaded_file_name = await borg.download_media(
-            r_message, Config.TMP_DOWNLOAD_DIRECTORY
+    if e.text[0].isalpha() or e.text[0] in ("/", "#", "@", "!"):
+        return
+    message = e.text
+    text = message.split()
+    counter = int(text[1])
+    r_message = await e.get_reply_message()
+    downloaded_file_name = await borg.download_media(
+        r_message, Config.TMP_DOWNLOAD_DIRECTORY
+    )
+    if downloaded_file_name.endswith((".webp")):
+        resize_image(downloaded_file_name)
+    try:
+        x = upload_file(downloaded_file_name)
+        url = f"https://telegra.ph/{x[0]}"
+        os.remove(downloaded_file_name)
+    except BaseException:
+        return await e.edit("Error!")
+    if url:
+        for _ in range(1, counter):
+            await e.client.send_file(e.chat_id, url)
+        await e.delete()
+    else:
+        await e.edit("Pic not supported :/")
+    if LOGGER:
+        await e.client.send_message(
+            LOGGER_GROUP, "#PICSPAM \n\n" "PicSpam was executed successfully"
         )
-        if downloaded_file_name.endswith((".webp")):
-            resize_image(downloaded_file_name)
-        try:
-            x = upload_file(downloaded_file_name)
-            url = f"https://telegra.ph/{x[0]}"
-            os.remove(downloaded_file_name)
-        except BaseException:
-            return await e.edit("Error!")
-        if url:
-            for i in range(1, counter):
-                await e.client.send_file(e.chat_id, url)
-            await e.delete()
-        else:
-            await e.edit("Pic not supported :/")
-        if LOGGER:
-            await e.client.send_message(
-                LOGGER_GROUP, "#PICSPAM \n\n" "PicSpam was executed successfully"
-            )
 
 
 @Lion.on(admin_cmd("delayspam (.*)"))
@@ -140,20 +141,7 @@ async def spam_function(event, sandy, cat, sleeptimem, sleeptimet, DelaySpam=Fal
         except BaseException:
             pass
         if LOGGER:
-            if DelaySpam is not True:
-                if event.is_private:
-                    await event.client.send_message(
-                        LOGGER_GROUP,
-                        "#SPAM\n"
-                        + f"Spam was executed successfully in [User](tg://user?id={event.chat_id}) chat with {counter} times with below message",
-                    )
-                else:
-                    await event.client.send_message(
-                        LOGGER_GROUP,
-                        "#SPAM\n"
-                        + f"Spam was executed successfully in {event.chat.title}(`{event.chat_id}`) with {counter} times with below message",
-                    )
-            else:
+            if DelaySpam is True:
                 if event.is_private:
                     await event.client.send_message(
                         LOGGER_GROUP,
@@ -167,26 +155,23 @@ async def spam_function(event, sandy, cat, sleeptimem, sleeptimet, DelaySpam=Fal
                         + f"Delay spam was executed successfully in {event.chat.title}(`{event.chat_id}`) with {counter} times with below message with delay {sleeptimet} seconds",
                     )
 
-            sandy = await event.client.send_file(BOTLOG_CHATID, sandy)
-            await _catutils.unsavegif(event, sandy)
-        return
-    if LOGGER:
-        if DelaySpam is not True:
-            if event.is_private:
+            elif event.is_private:
                 await event.client.send_message(
                     LOGGER_GROUP,
                     "#SPAM\n"
-                    + f"Spam was executed successfully in [User](tg://user?id={event.chat_id}) chat with {counter} messages of \n"
-                    + f"`{spam_message}`",
+                    + f"Spam was executed successfully in [User](tg://user?id={event.chat_id}) chat with {counter} times with below message",
                 )
             else:
                 await event.client.send_message(
                     LOGGER_GROUP,
                     "#SPAM\n"
-                    + f"Spam was executed successfully in {event.chat.title}(`{event.chat_id}`) chat  with {counter} messages of \n"
-                    + f"`{spam_message}`",
+                    + f"Spam was executed successfully in {event.chat.title}(`{event.chat_id}`) with {counter} times with below message",
                 )
-        else:
+            sandy = await event.client.send_file(BOTLOG_CHATID, sandy)
+            await _catutils.unsavegif(event, sandy)
+        return
+    if LOGGER:
+        if DelaySpam is True:
             if event.is_private:
                 await event.client.send_message(
                     LOGGER_GROUP,
@@ -201,6 +186,21 @@ async def spam_function(event, sandy, cat, sleeptimem, sleeptimet, DelaySpam=Fal
                     + f"Delay spam was executed successfully in {event.chat.title}(`{event.chat_id}`) chat with delay {sleeptimet} seconds and with {counter} messages of \n"
                     + f"`{spam_message}`",
                 )
+
+        elif event.is_private:
+            await event.client.send_message(
+                LOGGER_GROUP,
+                "#SPAM\n"
+                + f"Spam was executed successfully in [User](tg://user?id={event.chat_id}) chat with {counter} messages of \n"
+                + f"`{spam_message}`",
+            )
+        else:
+            await event.client.send_message(
+                LOGGER_GROUP,
+                "#SPAM\n"
+                + f"Spam was executed successfully in {event.chat.title}(`{event.chat_id}`) chat  with {counter} messages of \n"
+                + f"`{spam_message}`",
+            )
 
 
 @Lion.on(admin_cmd(pattern="spspam$"))
@@ -328,13 +328,6 @@ async def _(event):
         sleeptimet = sleeptimem = float(input_str[0])
         cat = input_str[1:]
         counter = int(cat[0])
-        async with event.client.action(event.chat_id, "typing"):
-            for _ in range(counter):
-                reply = random.choice(catmemes.RAIDHU)
-                caption = f"{username} {reply} {username}"
-                async with event.client.action(event.chat_id, "typing"):
-                    await event.client.send_message(event.chat_id, caption)
-                    await asyncio.sleep(sleeptimem)
     else:
         input_str = "".join(event.text.split(maxsplit=1)[1:]).split(" ", 3)
         sleeptimet = sleeptimem = float(input_str[0])
@@ -347,13 +340,13 @@ async def _(event):
         e = a.id
         c = a.first_name
         username = f"[{c}](tg://user?id={e})"
-        async with event.client.action(event.chat_id, "typing"):
-            for _ in range(counter):
-                reply = random.choice(catmemes.RAIDHU)
-                caption = f"{username} {reply} {username}"
-                async with event.client.action(event.chat_id, "typing"):
-                    await event.client.send_message(event.chat_id, caption)
-                    await asyncio.sleep(sleeptimem)
+    async with event.client.action(event.chat_id, "typing"):
+        for _ in range(counter):
+            reply = random.choice(catmemes.RAIDHU)
+            caption = f"{username} {reply} {username}"
+            async with event.client.action(event.chat_id, "typing"):
+                await event.client.send_message(event.chat_id, caption)
+                await asyncio.sleep(sleeptimem)
 
 
 CMD_HELP.update(

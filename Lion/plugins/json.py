@@ -32,7 +32,7 @@ async def _(event):
             )
             await event.delete()
     else:
-        await eor(event, "`{}`".format(the_real_message))
+        await eor(event, f"`{the_real_message}`")
 
 
 CMD_HELP.update({"json": ".json <reply>\nUse - Get json encoding of the mssg."})

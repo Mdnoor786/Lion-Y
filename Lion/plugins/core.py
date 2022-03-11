@@ -41,7 +41,7 @@ async def send(event):
     message_id = event.message.id
     thumb = thumb_image_path
     input_str = event.pattern_match.group(1)
-    the_plugin_file = "./Lion/plugins/{}.py".format(input_str)
+    the_plugin_file = f"./Lion/plugins/{input_str}.py"
     if os.path.exists(the_plugin_file):
         await ok.delete()
         start = datetime.now()
@@ -96,10 +96,9 @@ async def install(event):
                 shortname = path1.stem
                 load_module(shortname.replace(".py", ""))
                 await event.edit(
-                    "Plugin Succesfully Installed The Plugin `{}`".format(
-                        os.path.basename(downloaded_file_name)
-                    )
+                    f"Plugin Succesfully Installed The Plugin `{os.path.basename(downloaded_file_name)}`"
                 )
+
             else:
                 os.remove(downloaded_file_name)
                 await event.edit(
@@ -119,7 +118,7 @@ async def install(event):
         event.chat_id, None, search=".py", filter=InputMessagesFilterDocument
     )
     total = int(documentss.total)
-    total_doxx = range(0, total)
+    total_doxx = range(total)
     b = await event.client.send_message(
         event.chat_id,
         f"**Installing {total} plugins...**\n`This msg will be deleted after the installation gets completed`",

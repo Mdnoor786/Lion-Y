@@ -56,13 +56,13 @@ async def _(event):
                     functions.channels.EditBannedRequest(event.chat_id, i, rights)
                 )
             except FloodWaitError as ex:
-                logger.warn("sleeping for {} seconds".format(ex.seconds))
+                logger.warn(f"sleeping for {ex.seconds} seconds")
                 sleep(ex.seconds)
             except Exception as ex:
                 await eor(event, str(ex))
             else:
                 p += 1
-        await eor(event, "{}: {} unbanned".format(event.chat_id, p))
+        await eor(event, f"{event.chat_id}: {p} unbanned")
 
 
 @Lion.on(admin_cmd(pattern="skick ?(.*)"))

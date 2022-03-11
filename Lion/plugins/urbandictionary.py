@@ -25,4 +25,4 @@ async def _(event):
             ),
         )
     except asyncurban.WordNotFoundError:
-        await eor(event, "No result found for **" + word + "**")
+        await eor(event, f"No result found for **{word}**")

@@ -5,7 +5,7 @@ from telethon import version
 from userbot.utils import admin_cmd, sudo_cmd
 
 from Lion import ALIVE_NAME, StartTime, lionver
-from Lion.helper import functions as dcdef 
+from Lion.helper import functions as dcdef
 from Lion.LionConfig import Config, Var
 
 DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else "ℓιση x υsεя"
@@ -23,17 +23,10 @@ edit_time = 5
 file1 = "https://telegra.ph/file/33f7e8dc3bb38cbe25991.jpg"
 """ =======================CONSTANTS====================== """
 # ======CONSTANTS=========#
-CUSTOM_ALIVE = (
-    Var.CUSTOM_ALIVE
-    if Var.CUSTOM_ALIVE
-    else "ʟɨօռ Ӽ ʊֆɛʀɮօȶ ɨֆ օռʟɨռɛ!"
-)
-ALV_PIC = Var.ALIVE_PIC if Var.ALIVE_PIC else "https://telegra.ph/file/33f7e8dc3bb38cbe25991.jpg"
-lionemoji = Var.CUSTOM_ALIVE_EMOJI if Var.CUSTOM_ALIVE_EMOJI else "**〢**"
-if Config.SUDO_USERS:
-    sudo = "Enabled"
-else:
-    sudo = "Disabled"
+CUSTOM_ALIVE = Var.CUSTOM_ALIVE or "ʟɨօռ Ӽ ʊֆɛʀɮօȶ ɨֆ օռʟɨռɛ!"
+ALV_PIC = Var.ALIVE_PIC or "https://telegra.ph/file/33f7e8dc3bb38cbe25991.jpg"
+lionemoji = Var.CUSTOM_ALIVE_EMOJI or "**〢**"
+sudo = "Enabled" if Config.SUDO_USERS else "Disabled"
 # ======CONSTANTS=========#
 
 @Lion.on(admin_cmd(pattern=r"alive"))

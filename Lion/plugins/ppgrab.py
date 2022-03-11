@@ -41,7 +41,7 @@ if 1 == 1:
             except BaseException:
                 await eor(event, "`Are you Comedy Me ?`")
                 return
-            if int(id) <= (len(photos)):
+            if id <= (len(photos)):
                 send_photos = await event.client.download_media(photos[id - 1])
                 await borg.send_file(event.chat_id, send_photos)
             else:

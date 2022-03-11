@@ -43,28 +43,26 @@ async def _(event):
             end = datetime.now()
             ms = (end - start).seconds
             await okey.edit(
-                "нεү ι нαvε ∂σωηℓσα∂ε∂ {} ιη {} sεcση∂s.".format(
-                    downloaded_file_name, ms
-                ),
+                f"нεү ι нαvε ∂σωηℓσα∂ε∂ {downloaded_file_name} ιη {ms} sεcση∂s."
             )
+
             if downloaded_file_name.endswith((".webp")):
                 resize_image(downloaded_file_name)
             try:
                 start = datetime.now()
                 media_urls = upload_file(downloaded_file_name)
             except exceptions.TelegraphException as exc:
-                await okey.edit("**Error : **" + str(exc))
+                await okey.edit(f"**Error : **{str(exc)}")
                 os.remove(downloaded_file_name)
             else:
                 end = datetime.now()
                 ms_two = (end - start).seconds
                 os.remove(downloaded_file_name)
                 await okey.edit(
-                    "ι нαvε υρℓσα∂ε∂ тσ [𝐓𝐄𝐋𝐄𝐆𝐑𝐀𝐏𝐇](https://telegra.ph{}) ιη {} sεcση∂s.".format(
-                        media_urls[0], (ms + ms_two)
-                    ),
+                    f"ι нαvε υρℓσα∂ε∂ тσ [𝐓𝐄𝐋𝐄𝐆𝐑𝐀𝐏𝐇](https://telegra.ph{media_urls[0]}) ιη {ms + ms_two} sεcση∂s.",
                     link_preview=False,
                 )
+
         elif input_str == "text":
             user_object = await borg.get_entity(r_message.from_id)
             title_of_page = user_object.first_name  # + " " + user_object.last_name

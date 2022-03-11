@@ -22,7 +22,7 @@ async def _(event):
             response = conv.wait_event(
                 events.NewMessage(incoming=True, from_users=264121194)
             )
-            await event.client.send_message(chat, "💋2016 Videolar🔞{}".format(input_str))
+            await event.client.send_message(chat, f"💋2016 Videolar🔞{input_str}")
             response = await response
         except YouBlockedUserError:
             await event.reply("```Unblock @SeXn1bot```")
@@ -47,7 +47,7 @@ async def _(event):
             response = conv.wait_event(
                 events.NewMessage(incoming=True, from_users=264121194)
             )
-            await event.client.send_message(chat, "♨️Old photo👙{}".format(input_str))
+            await event.client.send_message(chat, f"♨️Old photo👙{input_str}")
             response = await response
         except YouBlockedUserError:
             await event.reply("```Unblock @SeXn1bot```")
@@ -72,7 +72,7 @@ async def _(event):
             response = conv.wait_event(
                 events.NewMessage(incoming=True, from_users=264121194)
             )
-            await event.client.send_message(chat, "🔞Uz_sex♨️{}".format(input_str))
+            await event.client.send_message(chat, f"🔞Uz_sex♨️{input_str}")
             response = await response
         except YouBlockedUserError:
             await event.reply("```Unblock @SeXn1bot```")

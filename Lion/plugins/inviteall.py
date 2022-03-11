@@ -49,10 +49,7 @@ async def get_chatinfo(event):
 
 
 def make_mention(user):
-    if user.username:
-        return f"@{user.username}"
-    else:
-        return inline_mention(user)
+    return f"@{user.username}" if user.username else inline_mention(user)
 
 
 def inline_mention(user):
@@ -63,18 +60,19 @@ def inline_mention(user):
 def user_full_name(user):
     names = [user.first_name, user.last_name]
     names = [i for i in list(names) if i]
-    full_name = " ".join(names)
-    return full_name
+    return " ".join(names)
 
 
 @Lion.on(admin_cmd(pattern=r"allinvite ?(.*)"))
 async def get_users(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
-    if not sender.id == me.id:
-        rkp = await event.reply("`processing...`")
-    else:
-        rkp = await event.edit("`processing...`")
+    rkp = (
+        await event.edit("`processing...`")
+        if sender.id == me.id
+        else await event.reply("`processing...`")
+    )
+
     rk1 = await get_chatinfo(event)
     chat = await event.get_chat()
     if event.is_private:

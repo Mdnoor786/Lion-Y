@@ -32,19 +32,12 @@ from Lion.LionConfig import Var
 fuk_uid = bot.uid
 HELP_PIC = "https://telegra.ph/file/19cb1922fd016aaac12b9.jpg"
 PMPERMIT_PIC = os.environ.get("PMPERMIT_PIC", None)
-TELEPIC = (
-    PMPERMIT_PIC
-    if PMPERMIT_PIC
-    else "https://telegra.ph/file/bfa06df35913425dbcbc1.jpg"
-)
+TELEPIC = PMPERMIT_PIC or "https://telegra.ph/file/bfa06df35913425dbcbc1.jpg"
 PM_WARNS = {}
 PREV_REPLY_MESSAGE = {}
 myid = bot.uid
 mybot = Var.TG_BOT_USER_NAME_BF_HER
-if mybot.startswith("@"):
-    botname = mybot
-else:
-    botname = f"@{mybot}"
+botname = mybot if mybot.startswith("@") else f"@{mybot}"
 LOG_GP = Var.PRIVATE_GROUP_ID
 MESAG = (
     str(CUSTOM_PMPERMIT)
@@ -54,16 +47,7 @@ MESAG = (
 DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else "Lion User"
 USER_BOT_WARN_ZERO = "`𝙸 𝙷𝙰𝚅𝙴 𝚆𝙰𝚁𝙽𝙴𝙳 𝚈𝙾𝚄 𝙽𝙾𝚃 𝚃𝙾 𝚂𝙿𝙰𝙼 😑😑. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙷𝙰𝚅𝙴 𝙱𝙴𝙴𝙽 𝙱𝙻𝙾𝙲𝙺𝙴𝙳 𝙰𝙽𝙳 𝚁𝙴𝙿𝙾𝚁𝚃𝙴𝙳 𝚄𝙽𝚃𝙸𝙻 𝙵𝚄𝚃𝚄𝚁𝙴 𝙽𝙾𝚃𝙸𝙲𝙴.`\n\n**GoodBye!** "
 
-if Var.LOAD_MYBOT == "True":
-    USER_BOT_NO_WARN = (
-        "**𝙷𝙴𝚈 𝚃𝙷𝙸𝚂 𝙸𝚂 𝙻𝙸𝙾𝙽 𝙿𝙼 𝚂𝙴𝙲𝚄𝚁𝙸𝚃𝚈 !!! 𝙷𝙴𝚁𝙴 𝚃𝙾 𝙿𝚁𝙾𝚃𝙴𝙲𝚃 [{}](tg://user?id={})**\n\n"
-        "{}\n\n"
-        "𝙵𝙾𝚁 𝚄𝚁𝙶𝙴𝙽𝚃 𝙷𝙴𝙻𝙿, 𝙿𝙼 𝚅𝙸𝙰 {}"
-        "\n𝙿𝙻𝙴𝙰𝚂𝙴 𝙲𝙷𝙾𝙾𝚂𝙴 𝚆𝙷𝚈 𝚈𝙾𝚄 𝙰𝚁𝙴 𝙷𝙴𝚁𝙴, 𝙵𝚁𝙾𝙼 𝚃𝙷𝙴 𝙰𝚅𝙰𝙸𝙻𝙰𝙱𝙻𝙴 𝙾𝙿𝚃𝙸𝙾𝙽\n\n".format(
-            DEFAULTUSER, myid, MESAG, botname
-        )
-    )
-elif Var.LOAD_MYBOT == "False":
+if Var.LOAD_MYBOT == "False":
     USER_BOT_NO_WARN = (
         "**𝙿𝙼 𝚂𝙴𝙲𝚄𝚁𝙸𝚃𝚈 𝙾𝙵 [{}](tg://user?id={})**\n\n"
         "{}\n"
@@ -72,6 +56,15 @@ elif Var.LOAD_MYBOT == "False":
         )
     )
 
+elif Var.LOAD_MYBOT == "True":
+    USER_BOT_NO_WARN = (
+        "**𝙷𝙴𝚈 𝚃𝙷𝙸𝚂 𝙸𝚂 𝙻𝙸𝙾𝙽 𝙿𝙼 𝚂𝙴𝙲𝚄𝚁𝙸𝚃𝚈 !!! 𝙷𝙴𝚁𝙴 𝚃𝙾 𝙿𝚁𝙾𝚃𝙴𝙲𝚃 [{}](tg://user?id={})**\n\n"
+        "{}\n\n"
+        "𝙵𝙾𝚁 𝚄𝚁𝙶𝙴𝙽𝚃 𝙷𝙴𝙻𝙿, 𝙿𝙼 𝚅𝙸𝙰 {}"
+        "\n𝙿𝙻𝙴𝙰𝚂𝙴 𝙲𝙷𝙾𝙾𝚂𝙴 𝚆𝙷𝚈 𝚈𝙾𝚄 𝙰𝚁𝙴 𝙷𝙴𝚁𝙴, 𝙵𝚁𝙾𝙼 𝚃𝙷𝙴 𝙰𝚅𝙰𝙸𝙻𝙰𝙱𝙻𝙴 𝙾𝙿𝚃𝙸𝙾𝙽\n\n".format(
+            DEFAULTUSER, myid, MESAG, botname
+        )
+    )
 CUSTOM_HELP_EMOJI = os.environ.get("CUSTOM_HELP_EMOJI", "ネ")
 HELP_ROWS = int(os.environ.get("HELP_ROWS", 7))
 HELP_COLOUMNS = int(os.environ.get("HELP_COLOUMNS", 4))
@@ -129,10 +122,12 @@ if Var.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
         elif event.query.user_id == bot.uid and query == "repo":
             result = builder.article(
                 title="Repository",
-                text=f"Lion - Telegram Userbot.",
+                text="Lion - Telegram Userbot.",
                 buttons=[
                     [
-                        Button.url("𝙻𝙸𝙾𝙽 𝚁𝙴𝙿𝙾", "https://github.com/Mdnoor786/Lion-Y"),
+                        Button.url(
+                            "𝙻𝙸𝙾𝙽 𝚁𝙴𝙿𝙾", "https://github.com/Mdnoor786/Lion-Y"
+                        ),
                         Button.url(
                             "𝙳𝙴𝙿𝙻𝙾𝚈 𝙽𝙾𝚆",
                             "https://heroku.com/deploy?template=https://github.com/Mdnoor786/Lion-Y",
@@ -141,6 +136,7 @@ if Var.TG_BOT_USER_NAME_BF_HER is not None and tgbot is not None:
                     [Button.url("𝚂𝚄𝙿𝙿𝙾𝚁𝚃 𝙲𝙷𝙰𝚃", "https://t.me/LionXsupport")],
                 ],
             )
+
         else:
             result = builder.article(
                 "𝚂𝙾𝚄𝚁𝙲𝙴 𝙲𝙾𝙳𝙴",
@@ -269,8 +265,9 @@ async def _(event):
             await event.answer(reply_pop_up_alert, cache_time=0, alert=True)
         else:
             await event.edit(
-                f"Oh, so you are here to spam 😤\nGoodbye.\nYour message has been read and successfully ignored."
+                "Oh, so you are here to spam 😤\\nGoodbye.\\nYour message has been read and successfully ignored."
             )
+
             await borg(functions.contacts.BlockRequest(event.query.user_id))
             target = await event.client(GetFullUserRequest(event.query.user_id))
             ok = event.query.user_id
@@ -372,17 +369,13 @@ def paginate_help(page_number, loaded_plugins, prefix):
     number_of_rows = HELP_ROWS
     number_of_cols = HELP_COLOUMNS
     lion = CUSTOM_HELP_EMOJI
-    helpable_plugins = []
-    for p in loaded_plugins:
-        if not p.startswith("_"):
-            helpable_plugins.append(p)
+    helpable_plugins = [p for p in loaded_plugins if not p.startswith("_")]
     helpable_plugins = sorted(helpable_plugins)
     modules = [
-        custom.Button.inline(
-            "{} {} {}".format(lion, x, lion), data="us_plugin_{}".format(x)
-        )
+        custom.Button.inline(f"{lion} {x} {lion}", data=f"us_plugin_{x}")
         for x in helpable_plugins
     ]
+
     pairs = list(zip(modules[::number_of_cols], modules[1::number_of_cols]))
     if len(modules) % number_of_cols == 1:
         pairs.append((modules[-1],))
@@ -394,14 +387,15 @@ def paginate_help(page_number, loaded_plugins, prefix):
         ] + [
             (
                 custom.Button.inline(
-                    " 🗡️քʀɛʋɨօʊֆ", data="{}_prev({})".format(prefix, modulo_page)
+                    " 🗡️քʀɛʋɨօʊֆ", data=f"{prefix}_prev({modulo_page})"
                 ),
                 custom.Button.inline("⚙️ Close ⚙️", data="close"),
                 custom.Button.inline(
-                    "ռɛӼȶ 🗡️", data="{}_next({})".format(prefix, modulo_page)
+                    "ռɛӼȶ 🗡️", data=f"{prefix}_next({modulo_page})"
                 ),
             )
         ]
+
     return pairs
 
 

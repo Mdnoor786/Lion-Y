@@ -10,8 +10,8 @@ import re
 import logging
 import inspect
 
-handler = Var.CMD_HNDLR if Var.CMD_HNDLR else r"\."
-sudo_hndlr = Var.SUDO_HNDLR if Var.SUDO_HNDLR else "!"
+handler = Var.CMD_HNDLR or r"\."
+sudo_hndlr = Var.SUDO_HNDLR or "!"
 
 
 def command(**args):
@@ -93,16 +93,16 @@ def load_module(shortname):
         import Lion.utils
         import importlib
         path = Path(f"Lion/plugins/{shortname}.py")
-        name = "Lion.plugins.{}".format(shortname)
+        name = f"Lion.plugins.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        print("Successfully (re)imported " + shortname)
+        print(f"Successfully (re)imported {shortname}")
     else:
         import Lion.utils
         import importlib
         path = Path(f"Lion/plugins/{shortname}.py")
-        name = "Lion.plugins.{}".format(shortname)
+        name = f"Lion.plugins.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         mod.bot = bot
@@ -124,8 +124,8 @@ def load_module(shortname):
         sys.modules["Lion.events"] = Lion.utils
         spec.loader.exec_module(mod)
         # for imports
-        sys.modules["Lion.plugins." + shortname] = mod
-        print("Pʟᴜɢɪɴ ʟᴏᴀᴅᴇᴅ ネ Pʟᴜɢɪɴ ɴᴀᴍᴇ " + shortname)
+        sys.modules[f"Lion.plugins.{shortname}"] = mod
+        print(f"Pʟᴜɢɪɴ ʟᴏᴀᴅᴇᴅ ネ Pʟᴜɢɪɴ ɴᴀᴍᴇ {shortname}")
         # support for other third-party plugins
         sys.modules["userbot.utils"] = Lion.utils
         sys.modules["userbot"] = Lion
@@ -271,9 +271,11 @@ async def progress(current, total, event, start, type_of_ps, file_name=None):
         time_to_completion = round((total - current) / speed) * 1000
         estimated_total_time = elapsed_time + time_to_completion
         progress_str = "[{0}{1}]\nProgress: {2}%\n".format(
-            ''.join(["█" for i in range(math.floor(percentage / 5))]),
-            ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
-            round(percentage, 2))
+            ''.join(["█" for _ in range(math.floor(percentage / 5))]),
+            ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2),
+        )
+
         tmp = progress_str + \
             "{0} of {1}\nETA: {2}".format(
                 humanbytes(current),
@@ -300,21 +302,24 @@ def humanbytes(size):
     while size > power:
         size /= power
         raised_to_pow += 1
-    return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
+    return f'{str(round(size, 2))} {dict_power_n[raised_to_pow]}B'
 
 
 def time_formatter(milliseconds: int) -> str:
     """Inputs time in milliseconds, to get beautified time,
     as string"""
-    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    seconds, milliseconds = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + " day(s), ") if days else "") + \
-        ((str(hours) + " hour(s), ") if hours else "") + \
-        ((str(minutes) + " minute(s), ") if minutes else "") + \
-        ((str(seconds) + " second(s), ") if seconds else "") + \
-        ((str(milliseconds) + " millisecond(s), ") if milliseconds else "")
+    tmp = (
+        (f'{str(days)} day(s), ' if days else "")
+        + (f'{str(hours)} hour(s), ' if hours else "")
+        + (f'{str(minutes)} minute(s), ' if minutes else "")
+        + (f'{str(seconds)} second(s), ' if seconds else "")
+        + (f'{str(milliseconds)} millisecond(s), ' if milliseconds else "")
+    )
+
     return tmp[:-2]
 
 
@@ -397,25 +402,25 @@ def start_mybot(shortname):
         from pathlib import Path
 
         path = Path(f"Lion/plugins/mybot/{shortname}.py")
-        name = "Lion.plugins.mybot.{}".format(shortname)
+        name = f"Lion.plugins.mybot.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         print("𝙸𝙼𝙿𝙾𝚁𝚃𝙸𝙽𝙶 𝙼𝙾𝙳𝚄𝙻𝙴𝚂 𝙿𝙻𝙴𝙰𝚂𝙴 𝚆𝙰𝙸𝚃.")
-        print("𝙻𝙸𝙾𝙽 - 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 " + shortname)
+        print(f"𝙻𝙸𝙾𝙽 - 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 {shortname}")
     else:
         import importlib
         import sys
         from pathlib import Path
 
         path = Path(f"Lion/plugins/mybot/{shortname}.py")
-        name = "Lion.plugins.mybot.{}".format(shortname)
+        name = f"Lion.plugins.mybot.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         mod.tgbot = bot.tgbot
         spec.loader.exec_module(mod)
-        sys.modules["Lion.plugins.mybot" + shortname] = mod
-        print("𝚃𝙶 𝙱𝙾𝚃 𝙷𝙰𝚂 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 " + shortname)
+        sys.modules[f"Lion.plugins.mybot{shortname}"] = mod
+        print(f"𝚃𝙶 𝙱𝙾𝚃 𝙷𝙰𝚂 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 {shortname}")
 
 
 def load_pmbot(shortname):
@@ -427,22 +432,22 @@ def load_pmbot(shortname):
         from pathlib import Path
 
         path = Path(f"Lion/plugins/mybot/pmbot/{shortname}.py")
-        name = "Lion.plugins.mybot.pmbot.{}".format(shortname)
+        name = f"Lion.plugins.mybot.pmbot.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         print("𝙸𝙼𝙿𝙾𝚁𝚃𝙸𝙽𝙶 𝙿𝙼 𝙿𝙴𝚁𝙼𝙸𝚃 .")
-        print("𝙿𝙼 𝙱𝙾𝚃 - 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 " + shortname)
+        print(f"𝙿𝙼 𝙱𝙾𝚃 - 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 {shortname}")
     else:
         import importlib
         import sys
         from pathlib import Path
 
         path = Path(f"Lion/plugins/mybot/pmbot/{shortname}.py")
-        name = "Lion.plugins.mybot.pmbot.{}".format(shortname)
+        name = f"Lion.plugins.mybot.pmbot.{shortname}"
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         mod.tgbot = bot.tgbot
         spec.loader.exec_module(mod)
-        sys.modules["Lion.plugins.mybot.pmbot." + shortname] = mod
-        print("𝙿𝙼 𝙱𝙾𝚃 𝙷𝙰𝚂 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 " + shortname)
+        sys.modules[f"Lion.plugins.mybot.pmbot.{shortname}"] = mod
+        print(f"𝙿𝙼 𝙱𝙾𝚃 𝙷𝙰𝚂 𝙸𝙼𝙿𝙾𝚁𝚃𝙴𝙳 {shortname}")

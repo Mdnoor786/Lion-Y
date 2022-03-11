@@ -9,6 +9,7 @@
 This module is used for updating TeleBot
 """
 
+
 import asyncio
 import sys
 from os import environ, execle, path, remove
@@ -27,15 +28,15 @@ HEROKU_APP_NAME = Var.HEROKU_APP_NAME
 GIT_REPO_NAME = "Lion-X"
 UPSTREAM_REPO_URL = "https://github.com/Mdnoor786/Lion-Y"
 
-xxxx = CMD_HNDLR if CMD_HNDLR else "."
+xxxx = CMD_HNDLR or "."
 
 
 async def gen_chlog(repo, diff):
-    ch_log = ""
     d_form = "On " + "%d/%m/%y" + " at " + "%H:%M:%S"
-    for c in repo.iter_commits(diff):
-        ch_log += f"**#{c.count()}** : {c.committed_datetime.strftime(d_form)} : [{c.summary}]({UPSTREAM_REPO_URL.rstrip('/')}/commit/{c}) by **{c.author}**\n"
-    return ch_log
+    return "".join(
+        f"**#{c.count()}** : {c.committed_datetime.strftime(d_form)} : [{c.summary}]({UPSTREAM_REPO_URL.rstrip('/')}/commit/{c}) by **{c.author}**\n"
+        for c in repo.iter_commits(diff)
+    )
 
 
 async def updateme_requirements():
@@ -61,8 +62,11 @@ async def upstream(ups):
     force_updateme = False
 
     try:
-        txt = "`Oops.. Updater cannot continue as "
-        txt += "some problems occured`\n\n**LOGTRACE:**\n"
+        txt = (
+            "`Oops.. Updater cannot continue as "
+            + "some problems occured`\n\n**LOGTRACE:**\n"
+        )
+
         repo = Repo()
     except NoSuchPathError as error:
         await ups.edit(f"{txt}\n`directory {error} is not found`")
@@ -124,9 +128,8 @@ async def upstream(ups):
         )
         if len(changelog_str) > 4096:
             await ups.edit("`Changelog is too big, view the file to see it.`")
-            file = open("output.txt", "w+")
-            file.write(changelog_str)
-            file.close()
+            with open("output.txt", "w+") as file:
+                file.write(changelog_str)
             await ups.client.send_file(
                 ups.chat_id,
                 "output.txt",
@@ -147,7 +150,6 @@ async def upstream(ups):
         import heroku3
 
         heroku = heroku3.from_key(Var.HEROKU_API_KEY)
-        heroku_app = None
         heroku_applications = heroku.apps()
         if not Var.HEROKU_APP_NAME:
             await ups.edit(
@@ -155,10 +157,15 @@ async def upstream(ups):
             )
             repo.__del__()
             return
-        for app in heroku_applications:
-            if app.name == Var.HEROKU_APP_NAME:
-                heroku_app = app
-                break
+        heroku_app = next(
+            (
+                app
+                for app in heroku_applications
+                if app.name == Var.HEROKU_APP_NAME
+            ),
+            None,
+        )
+
         if heroku_app is None:
             await ups.edit(
                 f"{txt}\n`Invalid Heroku credentials for updating userbot dyno.`"
@@ -171,8 +178,9 @@ async def upstream(ups):
         ups_rem.fetch(ac_br)
         repo.git.reset("--hard", "FETCH_HEAD")
         heroku_git_url = heroku_app.git_url.replace(
-            "https://", "https://api:" + Var.HEROKU_API_KEY + "@"
+            "https://", f"https://api:{Var.HEROKU_API_KEY}@"
         )
+
         if "heroku" in repo.remotes:
             remote = repo.remote("heroku")
             remote.set_url(heroku_git_url)

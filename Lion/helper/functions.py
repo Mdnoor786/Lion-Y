@@ -21,7 +21,7 @@ async def get_readable_time(seconds: int) -> str:
     for x in range(hmm):
         time_list[x] = str(time_list[x]) + time_suffix_list[x]
     if len(time_list) == 4:
-        up_time += time_list.pop() + ", "
+        up_time += f'{time_list.pop()}, '
     time_list.reverse()
     up_time += ":".join(time_list)
     return up_time
@@ -41,7 +41,7 @@ async def darkmusic(dark, QUALITY):
             # May change when Youtube Website may get updated in the future.
             video_link = link.get('href')
             break
-    video_link = 'http://www.youtube.com/' + video_link
+    video_link = f'http://www.youtube.com/{video_link}'
     command = (
         'youtube-dl --extract-audio --audio-format mp3 --audio-quality ' +
         QUALITY +
@@ -64,6 +64,6 @@ async def darkmusicvideo(dark):
             # May change when Youtube Website may get updated in the future.
             video_link = link.get('href')
             break
-    video_link = 'http://www.youtube.com/' + video_link
+    video_link = f'http://www.youtube.com/{video_link}'
     command = ('youtube-dl -f "[filesize<20M]" ' + video_link)
     os.system(command)

@@ -26,11 +26,8 @@ async def counter(tele):
         chat = f"@{tele.chat.username}"
     if not chat:
         return await tele.edit("`Give a channel/group @username`")
-    request_url = (
-        "https://api.telegram.org/bot{}/getChatMembersCount?chat_id={}".format(
-            Var.TG_BOT_TOKEN_BF_HER, chat
-        )
-    )
+    request_url = f"https://api.telegram.org/bot{Var.TG_BOT_TOKEN_BF_HER}/getChatMembersCount?chat_id={chat}"
+
     current_response = requests.get(request_url).json()
     try:
         ok = current_response["result"]

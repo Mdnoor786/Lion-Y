@@ -22,15 +22,15 @@ def progress(current, total):
 async def gsearch(q_event):
     """ For .google command, do a Google search. """
     match = q_event.pattern_match.group(1)
-    tele = await eor(q_event, "Searching for `{}`".format(match))
+    tele = await eor(q_event, f"Searching for `{match}`")
     page = findall(r"page=\d+", match)
     try:
         page = page[0]
         page = page.replace("page=", "")
-        match = match.replace("page=" + page[0], "")
+        match = match.replace(f"page={page[0]}", "")
     except IndexError:
         page = 1
-    search_args = (str(match), int(page))
+    search_args = str(match), page
     gsearch = GoogleSearch()
     gresults = await gsearch.async_search(*search_args)
     res = ""

@@ -41,22 +41,22 @@ async def _(event):
             return None
     try:
         async for x in borg.iter_participants(chat, filter=ChannelParticipantsAdmins):
-            if not x.deleted:
-                if isinstance(x.participant, ChannelParticipantCreator):
-                    mentions += "\n 👑 [{}](tg://user?id={}) `{}`".format(
-                        x.first_name, x.id, x.id
-                    )
+            if not x.deleted and isinstance(
+                x.participant, ChannelParticipantCreator
+            ):
+                mentions += "\n 👑 [{}](tg://user?id={}) `{}`".format(
+                    x.first_name, x.id, x.id
+                )
         mentions += "\n"
         async for x in borg.iter_participants(chat, filter=ChannelParticipantsAdmins):
-            if not x.deleted:
-                if isinstance(x.participant, ChannelParticipantAdmin):
-                    mentions += "\n ⚜️ [{}](tg://user?id={}) `{}`".format(
-                        x.first_name, x.id, x.id
-                    )
-            else:
+            if x.deleted:
                 mentions += "\n `{}`".format(x.id)
+            elif isinstance(x.participant, ChannelParticipantAdmin):
+                mentions += "\n ⚜️ [{}](tg://user?id={}) `{}`".format(
+                    x.first_name, x.id, x.id
+                )
     except Exception as e:
-        mentions += " " + str(e) + "\n"
+        mentions += f" {str(e)}" + "\n"
     if should_mention_admins:
         if reply_message:
             await reply_message.reply(mentions)
@@ -91,7 +91,7 @@ async def _(event):
                 ),
             )
     else:
-        await eor(event, "Current Chat ID: `{}`".format(str(event.chat_id)))
+        await eor(event, f"Current Chat ID: `{str(event.chat_id)}`")
 
 
 @Lion.on(admin_cmd(pattern="get_bot ?(.*)"))
@@ -123,7 +123,7 @@ async def _(event):
                     x.first_name, x.id, x.id
                 )
     except Exception as e:
-        mentions += " " + str(e) + "\n"
+        mentions += f" {str(e)}" + "\n"
     await eor(event, mentions)
 
 

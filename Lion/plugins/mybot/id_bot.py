@@ -24,5 +24,5 @@ async def _(event):
             )
     else:
         await tgbot.send_message(
-            event.chat_id, "Current Chat ID: `{}`".format(str(event.chat_id))
+            event.chat_id, f"Current Chat ID: `{str(event.chat_id)}`"
         )

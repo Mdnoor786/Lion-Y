@@ -91,11 +91,10 @@ async def variable(var):
         except IndexError:
             return await toput.edit("`Please specify ConfigVars you want to delete`")
         await asyncio.sleep(1.5)
-        if variable in heroku_var:
-            await toput.edit(f"`{variable}` **has been successfully deleted**")
-            del heroku_var[variable]
-        else:
+        if variable not in heroku_var:
             return await toput.edit(f"`{variable}`** doesn't exist**")
+        await toput.edit(f"`{variable}` **has been successfully deleted**")
+        del heroku_var[variable]
 
 
 @Lion.on(admin_cmd(pattern="usage"))
@@ -116,7 +115,7 @@ async def dyno_usage(dyno):
         "Authorization": f"Bearer {Var.HEROKU_API_KEY}",
         "Accept": "application/vnd.heroku+json; version=3.account-quotas",
     }
-    path = "/accounts/" + user_id + "/actions/get-quota"
+    path = f"/accounts/{user_id}/actions/get-quota"
     r = requests.get(heroku_api + path, headers=headers)
     if r.status_code != 200:
         return await dyno.edit(

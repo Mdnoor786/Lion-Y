@@ -35,7 +35,7 @@ from Lion import CUSTOM_PMPERMIT
 ##################--CONSTANTS--##################
 LOAD_MYBOT = Var.LOAD_MYBOT
 Heroku = heroku3.from_key(Var.HEROKU_API_KEY)
-BOT_PIC = Var.BOT_PIC if Var.BOT_PIC else "https://telegra.ph/file/28ed48fae7e23192af2cc.jpg"
+BOT_PIC = Var.BOT_PIC or "https://telegra.ph/file/28ed48fae7e23192af2cc.jpg"
 heroku_api = "https://api.heroku.com"
 path = Config.TMP_DOWNLOAD_DIRECTORY
 if not os.path.isdir(path):
@@ -53,9 +53,7 @@ async def start_all(event):
     if event.chat_id == OWNER_ID:
         return
     target = event.sender_id
-    if present_in_userbase(target):
-        pass
-    else:
+    if not present_in_userbase(target):
         try:
             add_to_userbase(target)
         except BaseException:
@@ -287,7 +285,7 @@ async def bot(event):
         xx = await tgbot.send_message(event.chat_id, "Changing your Bot Pic, please wait for a minute")
         heroku_var = app.config()
         heroku_var[Lion] = f"{url}"
-        mssg = f"Successfully changed your bot pic. Please wait for a minute.\n"
+        mssg = "Successfully changed your bot pic. Please wait for a minute.\\n"
         await xx.edit(mssg)
     else:
         await event.answer("You can't use this bot.", alert=True)
@@ -378,7 +376,10 @@ async def broadcast(event):
     users_cnt = len(full_userbase())
     err = 0
     success = 0
-    lmao = await tgbot.send_message(event.chat_id, "Starting broadcast to {} users.".format(users_cnt))
+    lmao = await tgbot.send_message(
+        event.chat_id, f"Starting broadcast to {users_cnt} users."
+    )
+
     start = datetime.now()
     for ok in targets:
         try:
@@ -428,7 +429,7 @@ async def alv(event):
 async def a_txt(event):
     if event.sender_id == OWNER_ID:
         await event.delete()
-        old_alv=Var.CUSTOM_ALIVE if Var.CUSTOM_ALIVE else "Default Alive message"
+        old_alv = Var.CUSTOM_ALIVE or "Default Alive message"
         Lion="CUSTOM_ALIVE"
         if Var.HEROKU_APP_NAME is not None:
             app=Heroku.app(Var.HEROKU_APP_NAME)
@@ -440,7 +441,7 @@ async def a_txt(event):
             response=conv.wait_event(events.NewMessage(chats=OWNER_ID))
             response=await response
             themssg=response.message.message
-            if themssg == None:
+            if themssg is None:
                 await conv.send_message("Error!")
                 return
             if themssg == "/cancel":
@@ -485,7 +486,7 @@ async def alv_pic(event):
         xx = await tgbot.send_message(event.chat_id, "Changing your Alive Pic, please wait for a minute")
         heroku_var=app.config()
         heroku_var[Lion]=f"{url}"
-        mssg=f"Successfully changed your alive pic. Please wait for a minute.\n"
+        mssg = "Successfully changed your alive pic. Please wait for a minute.\\n"
         await xx.edit(mssg)
     else:
         await event.answer("You can't use this bot.", alert=True)
@@ -502,7 +503,7 @@ async def alv(event):
 async def a_txt(event):
     if event.sender_id == OWNER_ID:
         await event.delete()
-        old_alv= CUSTOM_PMPERMIT if CUSTOM_PMPERMIT else "Default PMSecurity message"
+        old_alv = CUSTOM_PMPERMIT or "Default PMSecurity message"
         Lion="CUSTOM_PMPERMIT"
         if Var.HEROKU_APP_NAME is not None:
             app=Heroku.app(Var.HEROKU_APP_NAME)
@@ -514,7 +515,7 @@ async def a_txt(event):
             response=conv.wait_event(events.NewMessage(chats=OWNER_ID))
             response=await response
             themssg=response.message.message
-            if themssg == None:
+            if themssg is None:
                 await conv.send_message("Error!")
                 return
             if themssg == "/cancel":
@@ -559,7 +560,7 @@ async def alv_pic(event):
         xx = await tgbot.send_message(event.chat_id, "Changing your PMSecurity Pic, please wait for a minute")
         heroku_var=app.config()
         heroku_var[Lion]=f"{url}"
-        mssg=f"Successfully changed your PMSecurity pic. Please wait for a minute.\n"
+        mssg = "Successfully changed your PMSecurity pic. Please wait for a minute.\\n"
         await xx.edit(mssg)
     else:
         await event.answer("You can't use this bot.", alert=True)

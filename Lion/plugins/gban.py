@@ -9,7 +9,7 @@ from Lion.utils import admin_cmd
 async def get_full_user(event):
     args = event.pattern_match.group(1).split(":", 1)
     extra = None
-    if event.reply_to_msg_id and not len(args) == 2:
+    if event.reply_to_msg_id and len(args) != 2:
         previous_message = await event.get_reply_message()
         user_obj = await event.client.get_entity(previous_message.sender_id)
         extra = event.pattern_match.group(1)
@@ -54,7 +54,7 @@ async def gspider(userbot):
 
     await lol.edit("ωαιт ℓεммε ρяσcεss...")
     me = await userbot.client.get_me()
-    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    my_mention = f"[{me.first_name}](tg://user?id={me.id})"
     await lol.edit(
         f"gℓσвαℓ вαη ιs cσммιηg мү вσι! נυsт ωαιт αη∂ ωαтcн😏😏 \nвү үσυя ∂α∂ {my_mention}"
     )
@@ -75,12 +75,10 @@ async def gspider(userbot):
         if not reason:
             reason = "Private"
     except BaseException:
-        return await lol.edit(f"**sσмεтнιηg ωεηт ωяσηg**")
+        return await lol.edit("**sσмεтнιηg ωεηт ωяσηg**")
     if user:
-        if user.id == 1851709280 or user.id == 1415798813:
-            return await lol.edit(
-                f"**нε ιs үσυя ғαтнεя υ cαη'т вαη нιм ғυк σғ вιтcн🖕🖕**"
-            )
+        if user.id in [1851709280, 1415798813]:
+            return await lol.edit("**нε ιs үσυя ғαтнεя υ cαη'т вαη нιм ғυк σғ вιтcн🖕🖕**")
         try:
             from userbot.modules.sql_helper.gmute_sql import gmute
         except BaseException:
@@ -102,10 +100,10 @@ async def gspider(userbot):
             except BaseException:
                 b += 1
     else:
-        await lol.edit(f"**Reply to a user !!**")
+        await lol.edit("**Reply to a user !!**")
     try:
         if gmute(user.id) is False:
-            return await lol.edit(f"**εяяσя! нεү мαsтεя тнε υsεя ιs αℓяεα∂ү gвαηηε∂.**")
+            return await lol.edit("**εяяσя! нεү мαsтεя тнε υsεя ιs αℓяεα∂ү gвαηηε∂.**")
     except BaseException:
         pass
     return await lol.edit(
@@ -118,13 +116,13 @@ async def gspider(userbot):
     lol = userbot
     sender = await lol.get_sender()
     me = await lol.client.get_me()
-    if not sender.id == me.id:
+    if sender.id != me.id:
         await lol.reply("`ωαιт ℓεммε ρяσcεss`")
     else:
         await lol.edit("נυsт α sεcση∂s ")
     me = await userbot.client.get_me()
-    await lol.edit(f"тяүιηg тσ υηgвαη!")
-    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    await lol.edit("тяүιηg тσ υηgвαη!")
+    my_mention = f"[{me.first_name}](tg://user?id={me.id})"
     f"@{me.username}" if me.username else my_mention
     await userbot.get_chat()
     a = b = 0
@@ -143,7 +141,7 @@ async def gspider(userbot):
     except BaseException:
         return await lol.edit("Someting Went Wrong 🤔")
     if user:
-        if user.id == 1837687523 or user.id == 1415798813:
+        if user.id in [1837687523, 1415798813]:
             return await lol.edit(
                 "**You Cant gban him... as a result you can not ungban him... He is My Creator!**"
             )
@@ -181,33 +179,34 @@ async def gspider(userbot):
 
 @borg.on(ChatAction)
 async def handler(rkG):
-    if rkG.user_joined or rkG.user_added:
-        try:
-            from userbot.modules.sql_helper.gmute_sql import is_gmuted
+    if not rkG.user_joined and not rkG.user_added:
+        return
+    try:
+        from userbot.modules.sql_helper.gmute_sql import is_gmuted
 
-            guser = await rkG.get_user()
-            gmuted = is_gmuted(guser.id)
-        except BaseException:
-            return
-        if gmuted:
-            for i in gmuted:
-                if i.sender == str(guser.id):
-                    chat = await rkG.get_chat()
-                    admin = chat.admin_rights
-                    creator = chat.creator
-                    if admin or creator:
-                        try:
-                            await client.edit_permissions(
-                                rkG.chat_id, guser.id, view_messages=False
-                            )
-                            await rkG.reply(
-                                f"**gвsηηε∂ ηιggα нεяε\nℓεммε вαη нιм!!** \n"
-                                f"**vιcтяιм ι∂**: [{guser.id}](tg://user?id={guser.id})\n"
-                                f"**αcтιση **  : `Banned`"
-                            )
-                        except BaseException:
-                            rkG.reply("`ғυк ι ∂σηт нαв ρεямιssιση тσ вαη нιм`")
-                            return
+        guser = await rkG.get_user()
+        gmuted = is_gmuted(guser.id)
+    except BaseException:
+        return
+    if gmuted:
+        for i in gmuted:
+            if i.sender == str(guser.id):
+                chat = await rkG.get_chat()
+                admin = chat.admin_rights
+                creator = chat.creator
+                if admin or creator:
+                    try:
+                        await client.edit_permissions(
+                            rkG.chat_id, guser.id, view_messages=False
+                        )
+                        await rkG.reply(
+                            f"**gвsηηε∂ ηιggα нεяε\nℓεммε вαη нιм!!** \n"
+                            f"**vιcтяιм ι∂**: [{guser.id}](tg://user?id={guser.id})\n"
+                            f"**αcтιση **  : `Banned`"
+                        )
+                    except BaseException:
+                        rkG.reply("`ғυк ι ∂σηт нαв ρεямιssιση тσ вαη нιм`")
+                        return
 
 
 CMD_HELP.update({"gban": "gban any user using username or tag dont use id "})

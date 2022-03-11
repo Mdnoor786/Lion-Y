@@ -11,17 +11,18 @@ from Lion.utils import admin_cmd, sudo_cmd
 async def _(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
-    if not sender.id == me.id:
-        teletemp = await event.reply("`Processing...`")
-    else:
-        teletemp = await eor(event, "`Processing...`")
+    teletemp = (
+        await eor(event, "`Processing...`")
+        if sender.id == me.id
+        else await event.reply("`Processing...`")
+    )
+
     try:
         reply_message = await event.get_reply_message()
-        if reply_message:
-            if not reply_message.media:
-                return await teletemp.edit(
-                    "`Reply to a photo to convert it to a stiker.`"
-                )
+        if reply_message and not reply_message.media:
+            return await teletemp.edit(
+                "`Reply to a photo to convert it to a stiker.`"
+            )
         if not reply_message:
             return await teletemp.edit("**Syntax:**`.stickerize` reply to a  photo")
         chat = "@stickerator_bot"

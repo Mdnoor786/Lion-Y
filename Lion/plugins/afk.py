@@ -63,11 +63,10 @@ async def on_afk(event):
         endtime = ""
         if d > 0:
             endtime += f"{d}d {h}h {m}m {s}s"
+        elif h > 0:
+            endtime += f"{h}h {m}m {s}s"
         else:
-            if h > 0:
-                endtime += f"{h}h {m}m {s}s"
-            else:
-                endtime += f"{m}m {s}s" if m > 0 else f"{s}s"
+            endtime += f"{m}m {s}s" if m > 0 else f"{s}s"
     current_message_text = event.message.message.lower()
     if "afk" in current_message_text:
         # userbot's should not reply to other userbot's
@@ -75,12 +74,7 @@ async def on_afk(event):
         return False
     if USER_AFK and not (await event.get_sender()).bot:
         msg = None
-        if reason is not None and lion == "True":
-            message_to_reply = "**AFK**\n✘{CUSTOM}✘\n\nAғᴋ ʀᴇᴀsᴏɴ: {reson}".format(
-                CUSTOM=CUSTOM_AFK,
-                reson=reason,
-            )
-        elif lion == "False":
+        if reason is not None and lion == "True" or lion == "False":
             message_to_reply = "**AFK**\n✘{CUSTOM}✘\n\nAғᴋ ʀᴇᴀsᴏɴ: {reson}".format(
                 CUSTOM=CUSTOM_AFK,
                 reson=reason,
@@ -133,9 +127,9 @@ async def _(event):
     last_afk_message = {}
     afk_end = {}
     lion = "False"
-    start_1 = datetime.now()
-    afk_start = start_1.replace(microsecond=0)
     if not USER_AFK:
+        start_1 = datetime.now()
+        afk_start = start_1.replace(microsecond=0)
         if event.reply_to_msg_id:
             reply_message = await event.get_reply_message()
             media = await Lion.download_media(reply_message, "AFK_media")
@@ -146,15 +140,14 @@ async def _(event):
                 pass
             input_str = event.pattern_match.group(1)
             if url:
-                if input_str is not None:
-                    lion = "True"
-                    reason = f"`{input_str}`[‎‏‏‎ ‎](https://telegra.ph/{url[0]})"
-                else:
+                if input_str is None:
                     lion = "False"
                     reason = f"[‎‏‏‎ ‎](https://telegra.ph/{url[0]})"
-            else:
-                if input_str is not None:
-                    reason = f"`{input_str}`"
+                else:
+                    lion = "True"
+                    reason = f"`{input_str}`[‎‏‏‎ ‎](https://telegra.ph/{url[0]})"
+            elif input_str is not None:
+                reason = f"`{input_str}`"
         else:
             input_str = event.pattern_match.group(1)
             reason = f"`{input_str}`"
@@ -168,12 +161,10 @@ async def _(event):
             await event.edit(
                 f"**Hᴇʏ {DEFAULTUSER} ᴍᴀsᴛᴇʀ\nFʀᴏᴍ ɴᴏᴡ ᴏɴᴡᴀʀᴅs ɪ ᴡɪʟʟ ʀᴇᴘʟʏ ʏᴏᴜʀ ᴍsɢ ᴛɪʟʟ ʏᴏᴜ** **[AFK]**\n**Aғᴋ ʀᴇᴀsᴏɴ** - {reason}"
             )
-            await asyncio.sleep(5)
-            await event.delete()
         else:
             await event.edit(f"**Hᴇʏ {DEFAULTUSER} ᴍᴀsᴛᴇʀ\nFʀᴏᴍ ɴᴏᴡ ᴏɴᴡᴀʀᴅs ɪ ᴡɪʟʟ ʀᴇᴘʟʏ ʏᴏᴜʀ ᴍsɢ ᴛɪʟʟ ʏᴏᴜ** **[AFK]**")
-            await asyncio.sleep(5)
-            await event.delete()
+        await asyncio.sleep(5)
+        await event.delete()
         if BOTLOG:
             if reason:
                 await event.client.send_message(
@@ -183,7 +174,7 @@ async def _(event):
             else:
                 await event.client.send_message(
                     Var.PRIVATE_GROUP_ID,
-                    f"#AFK \nAFK - Active\nReason - None Specified.",
+                    "#AFK \\nAFK - Active\\nReason - None Specified.",
                 )
 
 
@@ -209,11 +200,10 @@ async def set_not_afk(event):
         endtime = ""
         if d > 0:
             endtime += f"{d}d {h}h {m}m {s}s"
+        elif h > 0:
+            endtime += f"{h}h {m}m {s}s"
         else:
-            if h > 0:
-                endtime += f"{h}h {m}m {s}s"
-            else:
-                endtime += f"{m}m {s}s" if m > 0 else f"{s}s"
+            endtime += f"{m}m {s}s" if m > 0 else f"{s}s"
     current_message = event.message.message
     if "afk" not in current_message and "on" in USER_AFK:
         shite = await event.client.send_message(

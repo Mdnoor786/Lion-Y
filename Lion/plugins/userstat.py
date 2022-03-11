@@ -24,15 +24,17 @@ from telethon.tl.functions.users import GetFullUserRequest
 swapi = os.environ.get("SPAMWATCH_API_KEY", None)
 
 
-@Lion.on(admin_cmd(pattern=f"ustat(?: |$)(.*)"))
-@Lion.on(sudo_cmd(pattern=f"ustat(?: |$)(.*)", allow_sudo=True))
+@Lion.on(admin_cmd(pattern="ustat(?: |$)(.*)"))
+@Lion.on(sudo_cmd(pattern="ustat(?: |$)(.*)", allow_sudo=True))
 async def _(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
-    if not sender.id == me.id:
-        lion = await event.reply("`Processing...`")
-    else:
-        lion = await event.edit("`Processing...`")
+    lion = (
+        await event.edit("`Processing...`")
+        if sender.id == me.id
+        else await event.reply("`Processing...`")
+    )
+
     if event.fwd_from:
         return
     tuser, rdhs = await get_full_user(event)
@@ -55,10 +57,9 @@ async def _(event):
     except BaseException:
         pass
     spambot = data = None
-    if data:
-        if data and data["ok"]:
-            reason = f"[Banned by Combot Anti Spam](https://combot.org/cas/query?u={check_user.id})"
-            spambot = True
+    if data and data["ok"]:
+        reason = f"[Banned by Combot Anti Spam](https://combot.org/cas/query?u={check_user.id})"
+        spambot = True
     if spambot:
         sbot = "Yes"
         sn = reason
@@ -67,8 +68,7 @@ async def _(event):
         sn = {}
     if swapi:
         sw = spamwatch.Client(swapi)
-        sswatch = sw.get_ban(user_id)
-        if sswatch:
+        if sswatch := sw.get_ban(user_id):
             spamw = "`Yes`"
             sreason = sswatch.reason
         else:
@@ -80,8 +80,7 @@ async def _(event):
     caption += f"**UserName:** `@{tuser.user.username}`\n"
     caption += f"**Scam:** `{tuser.user.scam}`\n"
     caption += f"**Restricted:** `{tuser.user.restricted}`\n"
-    temp = tuser.user.restriction_reason
-    if temp:
+    if temp := tuser.user.restriction_reason:
         caption += f"**Reason:** `{temp}`\n\n"
     caption += f"**Banned in SpamWatch:** {spamw}\n"
     if sreason:
@@ -102,10 +101,9 @@ async def get_full_user(event):
                     or previous_message.forward.channel_id
                 )
             )
-            return ruser, None
         else:
             ruser = await event.client(GetFullUserRequest(previous_message.from_id))
-            return ruser, None
+        return ruser, None
     else:
         input_str = None
         try:

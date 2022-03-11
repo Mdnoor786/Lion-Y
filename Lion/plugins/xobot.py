@@ -34,16 +34,16 @@ def deEmojify(inputString: str) -> str:
 @Lion.on(admin_cmd(pattern="playxo(?: |$)(.*)"))
 async def nope(doit):
     ok = doit.pattern_match.group(1)
-    if not ok:
-        if doit.is_reply:
-            (await doit.get_reply_message()).message
+    if not ok and doit.is_reply:
+        (await doit.get_reply_message()).message
 
-            return
+        return
     xoxoxo = await bot.inline_query("xobot", f"{(deEmojify(ok))}")
     await xoxoxo[0].click(
         doit.chat_id,
         reply_to=doit.reply_to_msg_id,
-        silent=True if doit.is_reply else False,
+        silent=bool(doit.is_reply),
         hide_via=True,
     )
+
     await doit.delete()

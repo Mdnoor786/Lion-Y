@@ -49,7 +49,7 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 
 
 @Lion.on(admin_cmd(pattern="zombies(?: |$)(.*)", outgoing=True))
-@Lion.on(sudo_cmd(pattern=f"zombies", allow_sudo=True))
+@Lion.on(sudo_cmd(pattern="zombies", allow_sudo=True))
 async def rm_deletedacc(show):
     """For .zombies command, list all the ghost/deleted/zombie accounts in a chat."""
 

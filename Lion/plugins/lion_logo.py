@@ -59,8 +59,9 @@ async def lg1(Lionevent):
     await bot.send_file(
         Lionevent.chat_id,
         file_name,
-        caption=f"**Made By**: [LionUb](t.me/lionxupdates)",
+        caption="**Made By**: [LionUb](t.me/lionxupdates)",
     )
+
     await event.delete()
     try:
         os.remove(file_name)

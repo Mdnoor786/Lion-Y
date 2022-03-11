@@ -40,9 +40,7 @@ async def _(event):
             m_list = None
             with open(downloaded_file_name, "rb") as fd:
                 m_list = fd.readlines()
-            message = ""
-            for m in m_list:
-                message += m.decode("UTF-8") + "\r\n"
+            message = "".join(m.decode("UTF-8") + "\r\n" for m in m_list)
             os.remove(downloaded_file_name)
         else:
             message = previous_message.message
@@ -57,12 +55,11 @@ async def _(event):
         nurl = f"https://del.dog/v/{r['key']}"
         await eor(
             event,
-            "Dogged to [dogbin]({}) in {} seconds. GoTo Original URL: {}".format(
-                url, ms, nurl
-            ),
+            f"Dogged to [dogbin]({url}) in {ms} seconds. GoTo Original URL: {nurl}",
         )
+
     else:
-        await eor(event, "Dogged to [dogbin]({}) in {} seconds".format(url, ms))
+        await eor(event, f"Dogged to [dogbin]({url}) in {ms} seconds")
 
 
 CMD_HELP.update(
